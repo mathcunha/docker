@@ -1,6 +1,6 @@
 ############################################################
 # Dockerfile to install java
-# Based on RHEL7 Image
+# Based on RHEL6.5 Image
 ############################################################
 
 FROM localhost:5000/cepro/rhel:6.5
