@@ -15,7 +15,7 @@ ENV JBOSS_HOME /usr/jboss/jboss-eap-6.1
 
 EXPOSE 9999
 
-ENTRYPOINT ["/usr/jboss/jboss-eap-6.1/bin/domain.sh", "--host-config=host-slave.xml -Djboss.domain.master.address=10.10.10.10 -Djboss.bind.address=0.0.0.0 -Xmx=256m -Xms=256m"]
+ENTRYPOINT ["/usr/jboss/jboss-eap-6.1/bin/domain.sh", "--host-config=host-slave.xml -Djboss.domain.master.address=10.10.10.10 -Djboss.bind.address=0.0.0.0"]
 
 # Set the file maintainer (your name - the file's author)
 MAINTAINER Matheus Cunha
