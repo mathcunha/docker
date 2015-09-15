@@ -1,0 +1,13 @@
+/subsystem=infinispan:remove
+/subsystem=jgroups:remove
+/subsystem=modcluster:remove
+/subsystem=mail:remove
+/subsystem=messaging/hornetq-server=default/broadcast-group=bg-group1:remove
+/subsystem=messaging/hornetq-server=default/discovery-group=dg-group1:remove 
+/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:remove 
+/subsystem=messaging/hornetq-server=default/jms-queue=DLQ:remove
+/subsystem=messaging/hornetq-server=default/jms-queue=ExpiryQueue:remove
+/subsystem=messaging/hornetq-server=default:write-attribute(name=cluster-user,value=hornetqadmin) 
+/subsystem=messaging/hornetq-server=default:write-attribute(name=cluster-password,value=hornetqpassword)
+/subsystem=messaging/hornetq-server=default:write-attribute(name=security-enabled,value=false)
+/subsystem=messaging/hornetq-server=default:write-attribute(name=message-counter-enabled,value=true) 

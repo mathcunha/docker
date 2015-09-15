@@ -1,0 +1,4 @@
+/subsystem=messaging/hornetq-server=default/jms-queue=FILA:add(durable=true,entries=["java:jboss/exported/queue/FILA"])
+/subsystem=messaging/hornetq-server=default/jms-queue=FILADLQ:add(durable=true,entries=["java:jboss/exported/queue/FILADLQ"])
+/subsystem=messaging/hornetq-server=default/jms-queue=FILAExpiryQueue:add(durable=true,entries=["java:jboss/exported/queue/FILAExpiryQueue"])
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.FILA:add(address-full-policy=BLOCK,dead-letter-address=jms.queue.FILADLQ,expiry-address=jms.queue.FILAExpiryQueue,max-delivery-attempts=60,max-size-bytes=QUEUE_SIZE,redistribution-delay=0,redelivery-delay=5000,max-delivery-attempts=15) 
