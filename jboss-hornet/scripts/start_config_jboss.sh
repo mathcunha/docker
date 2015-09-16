@@ -1,12 +1,11 @@
 #!/bin/bash
 /usr/jboss/jboss-eap-6.4/bin/standalone.sh -c standalone-full-ha.xml -b 0.0.0.0 -Djboss.bind.address.management=0.0.0.0 &
-sleep 1
-
 echo "" > /usr/jboss/cluster.jb
 i=0
 nodes=""
 VAR="${NODES_LIST}"
 echo "$VAR"
+sleep 20
 
 if [ -z "$VAR" ]; then
 	echo "NODE_LIST env is empty"
@@ -28,8 +27,7 @@ else
 
 	echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=netty,static-connectors=["$nodes"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
 	/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --file=/usr/jboss/cluster.jb
-
-	/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --command=':shutdown(restart=false)'
 fi
 
+/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --command=':shutdown(restart=false)'
 /usr/jboss/jboss-eap-6.4/bin/standalone.sh -c standalone-full-ha.xml -b ${HOSTNAME} -Djboss.bind.address.management=${HOSTNAME}
