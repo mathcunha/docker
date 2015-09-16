@@ -1,22 +1,35 @@
 #!/bin/bash
 /usr/jboss/jboss-eap-6.4/bin/standalone.sh -c standalone-full-ha.xml -b 0.0.0.0 -Djboss.bind.address.management=0.0.0.0 &
-sleep 20
+sleep 1
 
 echo "" > /usr/jboss/cluster.jb
 i=0
-for pair in "${NODES_LIST}"
-do
-    i=$((i+1))
-        IFS=':' read -a array <<< "$pair"
-    h=${array[0]}
-    p=${array[1]}
-        echo "/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=node$i:add(host=$h, port=$p)" >> /usr/jboss/cluster.jb
-        echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=netty,static-connectors=["node$i"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
-	echo "/subsystem=messaging/hornetq-server=default/remote-connector=node$i:add(socket-binding=node$i)" >> /usr/jboss/cluster.jb
-done
+nodes=""
+VAR="${NODES_LIST}"
+echo "$VAR"
 
-/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --file=/usr/jboss/cluster.jb
+if [ -z "$VAR" ]; then
+	echo "NODE_LIST env is empty"
+else
+        IFS=' ' read -a endpoint <<< "$VAR"
+	for pair in "${endpoint[@]}"
+	do
+    		i=$((i+1))
+    		IFS=':' read -a array <<< "$pair"
+    		nodes="$nodes,node$i"
+    		h=${array[0]}
+    		p=${array[1]}
+        	echo "/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=node$i:add(host=$h, port=$p)" >> /usr/jboss/cluster.jb
+		echo "/subsystem=messaging/hornetq-server=default/remote-connector=node$i:add(socket-binding=node$i)" >> /usr/jboss/cluster.jb
+	done
 
-/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --command=':shutdown(restart=false)'
+	#removing first ,
+        nodes=$(echo $nodes | sed 's/^,//g')
+
+	echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=netty,static-connectors=["$nodes"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
+	/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --file=/usr/jboss/cluster.jb
+
+	/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --command=':shutdown(restart=false)'
+fi
 
 /usr/jboss/jboss-eap-6.4/bin/standalone.sh -c standalone-full-ha.xml -b ${HOSTNAME} -Djboss.bind.address.management=${HOSTNAME}
