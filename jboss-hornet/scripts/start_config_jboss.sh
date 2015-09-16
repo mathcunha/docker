@@ -10,8 +10,9 @@ do
         IFS=':' read -a array <<< "$pair"
     h=${array[0]}
     p=${array[1]}
-        echo "/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=node0$i:add(host=$h, port=$p)" >> /usr/jboss/cluster.jb
-        echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=netty,static-connectors=["node0$i"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
+        echo "/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=node$i:add(host=$h, port=$p)" >> /usr/jboss/cluster.jb
+        echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=netty,static-connectors=["node$i"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
+	echo "/subsystem=messaging/hornetq-server=default/remote-connector=node$i:add(socket-binding=node$i)" >> /usr/jboss/cluster.jb
 done
 
 /usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --file=/usr/jboss/cluster.jb

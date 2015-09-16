@@ -7,6 +7,7 @@
 /subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:remove 
 /subsystem=messaging/hornetq-server=default/jms-queue=DLQ:remove
 /subsystem=messaging/hornetq-server=default/jms-queue=ExpiryQueue:remove
+/subsystem=messaging/hornetq-server=default/address-setting=#:remove
 /subsystem=messaging/hornetq-server=default:write-attribute(name=cluster-user,value=hornetqadmin) 
 /subsystem=messaging/hornetq-server=default:write-attribute(name=cluster-password,value=hornetqpassword)
 /subsystem=messaging/hornetq-server=default:write-attribute(name=security-enabled,value=false)
