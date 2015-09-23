@@ -22,10 +22,16 @@ else
 		echo "/subsystem=messaging/hornetq-server=default/remote-connector=node$i:add(socket-binding=node$i)" >> /usr/jboss/cluster.jb
 	done
 
+	IFS=':' read -a array <<< "${NODE_ADDRESS}"
+	h=${array[0]}
+	p=${array[1]}
+	echo "/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=LOCAL:add(host=$h,port=$p)" >> /usr/jboss/cluster.jb
+	echo "/subsystem=messaging/hornetq-server=default/remote-connector=LOCAL:add(socket-binding=LOCAL)" >> /usr/jboss/cluster.jb
+
 	#removing first ,
         nodes=$(echo $nodes | sed 's/^,//g')
+	echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=LOCAL,static-connectors=["$nodes"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
 
-	echo "/subsystem=messaging/hornetq-server=default/cluster-connection=my-cluster:add(connector-ref=netty,static-connectors=["$nodes"],cluster-connection-address=jms)" >> /usr/jboss/cluster.jb
 	/usr/jboss/jboss-eap-6.4/bin/jboss-cli.sh -c --file=/usr/jboss/cluster.jb
 fi
 
